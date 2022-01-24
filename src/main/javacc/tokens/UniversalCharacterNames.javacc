@@ -1,0 +1,7 @@
+TOKEN #UniversalCharacterName :
+    < UNIVERSAL_CHARACTER_NAME :
+        ("\\u" <HEX_QUAD>)
+        | ("\\U" <HEX_QUAD> <HEX_QUAD>)
+    >
+    | < #HEX_QUAD : <HEXADECIMAL_DIGIT> <HEXADECIMAL_DIGIT> <HEXADECIMAL_DIGIT> <HEXADECIMAL_DIGIT> >
+;

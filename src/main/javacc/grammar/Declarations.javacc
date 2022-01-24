@@ -1,0 +1,245 @@
+Declaration :
+    ( DeclarationSpecifiers [InitDeclaratorList] ";")
+    | StaticAssertDeclaration
+;
+
+DeclarationSpecifiers :
+    (StorageClassSpecifier [DeclarationSpecifiers] )
+    | (TypeSpecifier [DeclarationSpecifiers] )
+    | (TypeQualifier [DeclarationSpecifiers] )
+    | (FunctionSpecifier [DeclarationSpecifiers] )
+    | (AlignmentSpecifier [DeclarationSpecifiers] )
+;
+
+//InitDeclaratorList :
+//    InitDeclarator
+//    | (InitDeclaratorList "," InitDeclarator)
+//;
+
+InitDeclaratorList :
+    InitDeclarator ("," InitDeclarator)*
+;
+
+InitDeclarator :
+    Declarator ["=" Initializer]
+;
+
+StorageClassSpecifier : <TYPEDEF> | <EXTERN> | <STATIC> | <_THREAD_LOCAL> | <AUTO> | <REGISTER> ;
+
+TypeSpecifier : <VOID> | <CHAR> | <SHORT> | <INT> | <LONG> | <FLOAT> | <DOUBLE> | <SIGNED> | <UNSIGNED>
+    | <_BOOL> | <_COMPLEX> | AtomicTypeSpecifier | StructOrUnionSpecifier | EnumSpecifier
+    | ClassSpecifier
+;
+
+ClassSpecifier : <CLASS>;
+
+StructOrUnionSpecifier :
+    (StructOrUnion [<IDENTIFIER>] "{" StructDeclarationList "}")
+    |(StructOrUnion <IDENTIFIER>)
+;
+
+StructOrUnion : <STRUCT> | <UNION> ;
+
+StructDeclarationList :
+    (SCAN StructDeclaration)+
+;
+
+StructDeclaration :
+    (SpecifierQualifierList [StructDeclaratorList] ";")
+    | StaticAssertDeclaration
+;
+
+SpecifierQualifierList :
+    (TypeSpecifier [SpecifierQualifierList])
+    |(TypeQualifier [SpecifierQualifierList])
+;
+
+//StructDeclaratorList :
+//    StructDeclarator
+//    | (StructDeclaratorList "," StructDeclarator)
+//;
+
+StructDeclaratorList :
+    StructDeclarator [StructDeclaratorListPrim]
+;
+
+StructDeclaratorListPrim :
+    ("," StructDeclarator [StructDeclaratorListPrim])
+;
+
+StructDeclarator :
+    Declarator
+    | ([Declarator] ":" ConstantExpression)
+;
+
+EnumSpecifier :
+    (<ENUM> [<IDENTIFIER>] "{" EnumeratorList "}")
+    |(<ENUM> [<IDENTIFIER>] "{" EnumeratorList "," "}")
+    |(<ENUM> <IDENTIFIER>)
+;
+
+//EnumeratorList :
+//    Enumerator
+//    | (EnumeratorList "," Enumerator)
+//;
+
+EnumeratorList :
+    Enumerator [EnumeratorListPrim]
+;
+
+EnumeratorListPrim :
+    ("," Enumerator [EnumeratorListPrim])
+;
+
+Enumerator :
+    <ENUMERATION_CONSTANT>
+    | (<ENUMERATION_CONSTANT> "=" ConstantExpression)
+;
+
+AtomicTypeSpecifier : <_ATOMIC> "(" TypeName ")" ;
+
+TypeQualifier : <CONST> | <RESTRICT> | <VOLATILE> | <_ATOMIC> ;
+
+FunctionSpecifier : <INLINE> | <_NORETURN> ;
+
+AlignmentSpecifier : (<_ALIGNAS> "(" TypeName ")" ) | (<_ALIGNAS> "(" ConstantExpression ")") ;
+
+Declarator : [Pointer] DirectDeclarator;
+
+//DirectDeclarator :
+//    <IDENTIFIER>
+//    | "(" Declarator ")"
+//    | (DirectDeclarator "[" [TypeQualifierList] [AssigmentExpression] "]")
+//    | (DirectDeclarator "[" <STATIC> [TypeQualifierList] [AssigmentExpression] "]")
+//    | (DirectDeclarator "[" [TypeQualifierList] <STATIC> [AssigmentExpression] "]")
+//    | (DirectDeclarator "[" [TypeQualifierList] "*" "]")
+//    | (DirectDeclarator "(" ParameterTypeList ")")
+//    | (DirectDeclarator "(" [IdentifierList] ")")
+//;
+
+DirectDeclarator :
+    (<IDENTIFIER> [DirectDeclaratorPrim])
+    | ("(" Declarator ")" [DirectDeclaratorPrim])
+;
+
+DirectDeclaratorPrim :
+    ("[" [TypeQualifierList] [AssigmentExpression] "]" [DirectDeclaratorPrim])
+    | ("[" <STATIC> [TypeQualifierList] [AssigmentExpression] "]" [DirectDeclaratorPrim])
+    | ("[" [TypeQualifierList] <STATIC> [AssigmentExpression] "]" [DirectDeclaratorPrim])
+    | ("[" [TypeQualifierList] "*" "]" [DirectDeclaratorPrim])
+    | ("(" ParameterTypeList ")" [DirectDeclaratorPrim])
+    | ("(" [IdentifierList] ")" [DirectDeclaratorPrim])
+;
+
+Pointer :
+    ("*" [TypeQualifierList] [Pointer])
+;
+
+//TypeQualifierList :
+//    TypeQualifier
+//    | (TypeQualifierList TypeQualifier)
+//;
+
+TypeQualifierList :
+    (TypeQualifier)+
+;
+
+ParameterTypeList :
+    ParameterList
+    | (ParameterList "," "...")
+;
+
+//ParameterList :
+//    ParameterDeclaration
+//    | (ParameterList "," ParameterDeclaration)
+//;
+
+ParameterList :
+    ParameterDeclaration ("," ParameterDeclaration)*
+;
+
+//ParameterDeclaration :
+//    (DeclarationSpecifiers Declarator)
+//    | (DeclarationSpecifiers [AbstractDeclarator])
+//;
+
+ParameterDeclaration :
+    (DeclarationSpecifiers [Declarator|AbstractDeclarator] )
+;
+
+//IdentifierList:
+//    <IDENTIFIER>
+//    | (IdentifierList "," <IDENTIFIER>)
+//;
+
+IdentifierList:
+    <IDENTIFIER> [IdentifierListPrim]
+;
+
+IdentifierListPrim :
+    ("," <IDENTIFIER> [IdentifierListPrim])
+;
+
+TypeName : SpecifierQualifierList [AbstractDeclarator];
+
+AbstractDeclarator :
+    Pointer
+    | ([Pointer] DirectAbstractDeclarator)
+;
+
+DirectAbstractDeclarator :
+    "(" AbstractDeclarator ")" (DirectAbstractDeclarator)*
+;
+
+DirectAbstractDeclaratorPrim :
+    (SCAN "[" TypeQualifierList <STATIC> =>|| AssigmentExpression "]")
+    | (SCAN 2 "[" <STATIC> [TypeQualifierList] AssigmentExpression "]")
+    | (SCAN "[" [TypeQualifierList] [AssigmentExpression] "]")
+    | (SCAN 2 "[" "*" "]")
+    | ("(" [ParameterTypeList] ")")
+;
+
+TypedefName : <IDENTIFIER> ;
+
+Initializer :
+    AssigmentExpression
+    | ("{" InitializerList "}")
+    | ("{" InitializerList "," "}")
+;
+
+//InitializerList :
+//    ([Designation] Initializer)
+//    | (InitializerList "," [Designation] Initializer)
+//;
+
+InitializerList :
+    ([Designation] Initializer) [InitializerListPrim]
+;
+
+InitializerListPrim :
+    ("," [Designation] Initializer [InitializerListPrim])
+;
+
+Designation : DesignationList "=";
+
+//DesignationList :
+//    Designator
+//    | (DesignationList Designator)
+//;
+
+DesignationList :
+    Designator [DesignationListPrim]
+;
+
+DesignationListPrim :
+    (Designator [DesignationListPrim])
+;
+
+Designator:
+    ("[" ConstantExpression "]" )
+    | "." <IDENTIFIER>
+;
+
+StaticAssertDeclaration :
+    (<_STATIC_ASSERT> "(" ConstantExpression ["," <STRING_LITERAL>] ")" ";")
+;

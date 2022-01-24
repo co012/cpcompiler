@@ -1,0 +1,4 @@
+INCLUDE "grammar/Expressions.javacc"
+INCLUDE "grammar/Declarations.javacc"
+INCLUDE "grammar/Statements.javacc"
+INCLUDE "grammar/ExternalDefinitions.javacc"

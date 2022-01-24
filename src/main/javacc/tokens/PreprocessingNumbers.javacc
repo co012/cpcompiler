@@ -1,0 +1,5 @@
+TOKEN #PreprocessingNumber :
+    <PP_NUMBER :
+        ( (".")? (<DIGIT>)+ )
+    >
+;

@@ -1,0 +1,27 @@
+JAVA_UNICODE_ESCAPE;
+BASE_SRC_DIR="./../java";
+PARSER_PACKAGE=parser;
+NODE_PACKAGE=nodes;
+DEFAULT_LEXICAL_STATE=C;
+PRESERVE_LINE_ENDINGS=true;
+TABS_TO_SPACES=4;
+SMART_NODE_CREATION=false;
+
+INCLUDE "CpLexer.javacc"
+
+INCLUDE "CpGrammar.javacc"
+
+INJECT CpGrammarParser :
+    import java.util.Set;
+    import java.util.HashSet;
+{
+    private final Set<String> typedefNames = new HashSet<>();
+    private boolean typedefNameExists(){
+        System.out.println(currentLookaheadToken);
+        return typedefNames.contains("ala");
+    }
+
+    public void parse() throws ParseException {
+        this.TranslationUnit();
+    }
+}

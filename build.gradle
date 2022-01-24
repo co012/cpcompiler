@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+}
+
+group 'pl.edu.agh'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+sourceSets{
+    main {
+        resources {
+            srcDir 'src/main/resource'
+        }
+    }
+
+    test {
+        resources {
+            srcDir "src/test/resource"
+        }
+    }
+}
+
+tasks.register("downloadJarsToLibs"){
+    doLast {
+        mkdir("libs")
+        def f = new File('libs/javacc.jar')
+        if (!f.exists()) {
+            new URL('https://javacc.com/download/javacc-full.jar')
+                    .withInputStream{ i -> f.withOutputStream{ it << i }}
+        }
+    }
+}
+
+tasks.register("generate"){
+    doLast {
+        println file("src/main/javacc").getAbsolutePath()
+        javaexec {
+            main = "-jar"
+            jvmArgs = [
+                    "-Duser.dir:" + rootProject.file("src/main/javacc")
+            ]
+            args = [
+                    "libs/javacc.jar",
+                    "src/main/javacc/CPlus.javacc"
+            ]
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    it.dependsOn(tasks.named("generate"))
+}

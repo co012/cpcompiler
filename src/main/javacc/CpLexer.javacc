@@ -1,0 +1,41 @@
+DEFAULT_LEXICAL_STATE=C;
+
+UNPARSED :
+    <WHITESPACE : (" "| "\t"| "\n"| "\r"| "\f")+>
+;
+
+<IN_MULTI_LINE_COMMENT>
+UNPARSED :
+  <MULTI_LINE_COMMENT: "*/" >
+;
+
+MORE :
+  "//" : IN_SINGLE_LINE_COMMENT
+  |
+  "/*" : IN_MULTI_LINE_COMMENT
+  |
+  "#"  : IN_PREPROCESSOR
+;
+
+<IN_SINGLE_LINE_COMMENT>
+UNPARSED :
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" >
+;
+
+<IN_PREPROCESSOR>
+UNPARSED :
+    <PREPROCESSOR: "\n" | "\r" | "\r\n">
+;
+
+<IN_SINGLE_LINE_COMMENT,IN_MULTI_LINE_COMMENT, IN_PREPROCESSOR>
+MORE :
+  < ~[] >
+;
+
+
+
+INCLUDE "tokens/Keywords.javacc"
+INCLUDE "tokens/Identifiers.javacc"
+INCLUDE "tokens/UniversalCharacterNames.javacc"
+INCLUDE "tokens/Constants.javacc"
+INCLUDE "tokens/StringLiterals.javacc"

@@ -1,0 +1,6 @@
+mkdir("libs")
+def f = new File('libs/javacc.jar')
+if (!f.exists()) {
+    new URL('https://javacc.com/download/javacc-full.jar')
+            .withInputStream{ i -> f.withOutputStream{ it << i }}
+}

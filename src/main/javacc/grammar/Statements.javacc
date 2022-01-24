@@ -1,0 +1,45 @@
+Statement :
+      ExpressionStatement
+    | CompoundStatement
+    | LabeledStatement
+    | SelectionStatement
+    | IterationStatement
+    | JumpStatement
+;
+
+LabeledStatement :
+    (<IDENTIFIER> ":" Statement)
+    | (<CASE> ConstantExpression ":" Statement)
+    | (<DEFAULT> ":" Statement)
+;
+
+CompoundStatement : "{" [BlockItemList] "}" ;
+
+BlockItemList : (BlockItem)+ ;
+
+BlockItem :
+    Declaration
+    | Statement
+;
+
+ExpressionStatement : [Expression] ";" ;
+
+SelectionStatement :
+    (<IF> "(" Expression ")" Statement)
+    | (<IF> "(" Expression ")" Statement <ELSE> Statement)
+    | (<SWITCH> "(" Expression ")" Statement)
+;
+
+IterationStatement :
+    (<WHILE> "(" Expression ")" Statement)
+    | (<DO> Statement <WHILE> "(" Expression ")")
+    | (<FOR> "(" [Expression] ";" [Expression] ";" [Expression] ")" Statement)
+    | (<FOR> "(" Declaration [Expression] ";" [Expression] ")" Statement)
+;
+
+JumpStatement :
+    (<GOTO> <IDENTIFIER>)
+    | (<CONTINUE> ";")
+    | (<BREAK> ";")
+    | (<RETURN> [Expression] ";")
+;

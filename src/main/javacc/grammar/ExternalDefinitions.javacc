@@ -1,0 +1,22 @@
+TranslationUnit :
+    (ExternalDeclaration)+
+;
+
+
+ExternalDeclaration:
+    SCAN Declaration
+    | ClassDefinition
+    | FunctionDefinition
+;
+
+FunctionDefinition : DeclarationSpecifiers Declarator [DeclarationList] CompoundStatement ;
+
+ClassDefinition : <CLASS> <IDENTIFIER> "{" [StructDeclarationList] (FunctionDefinition)* "}" ;
+
+DeclarationList :
+    (Declaration)+
+;
+
+//______________________
+
+ClassSpecifier : <CLASS>;

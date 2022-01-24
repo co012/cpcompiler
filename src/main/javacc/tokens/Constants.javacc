@@ -1,0 +1,80 @@
+TOKEN #Constant :
+     < CONSTANT :
+        <INTEGER_CONSTANT>
+        | <FLOATING_CONSTANT>
+        | <ENUMERATION_CONSTANT>
+        | <CHARACTER_CONSTANT>
+     >
+     | < INTEGER_CONSTANT :
+        (<DECIMAL_CONSTANT> (<INTEGER_SUFFIX>)?)
+        | (<OCTAL_CONSTANT> (<INTEGER_SUFFIX>)?)
+        | (<HEXADECIMAL_CONSTANT> (<INTEGER_SUFFIX>)?)
+     >
+     | < #DECIMAL_CONSTANT :
+        <NON_ZERO_DIGIT> (<DIGIT>)*
+//        | (<DECIMAL_CONSTANT> <DIGIT>)
+     >
+     | < #OCTAL_CONSTANT :
+        "0" (<OCTAL_DIGIT>)*
+//       | (<OCTAL_CONSTANT> <OCTAL_DIGIT>)
+     >
+     | < #HEXADECIMAL_CONSTANT :
+        (<HEXADECIMAL_PREFIX> (<HEXADECIMAL_DIGIT>)*)
+//        | (<HEXADECIMAL_CONSTANT> <HEXADECIMAL_DIGIT>)
+     >
+     | < #HEXADECIMAL_PREFIX : "0"["x","X"] >
+     | < #NON_ZERO_DIGIT : ["1"-"9"] >
+     | < #OCTAL_DIGIT : ["0"-"7"] >
+     | < #HEXADECIMAL_DIGIT : ["0"-"9","a"-"f","A"-"F"] >
+     | < #INTEGER_SUFFIX :
+        (<UNSIGNED_SUFFIX> (<LONG_SUFFIX>)?)
+        | (<UNSIGNED_SUFFIX> <LONG_LONG_SUFFIX>)
+        | (<LONG_SUFFIX> (<UNSIGNED_SUFFIX>)?)
+        | ( <LONG_LONG_SUFFIX> (<UNSIGNED_SUFFIX>)?)
+     >
+     | < #UNSIGNED_SUFFIX : ["u","U"] >
+     | < #LONG_SUFFIX : ["l","L"] >
+     | < #LONG_LONG_SUFFIX : "ll" | "LL" >
+     | < FLOATING_CONSTANT :
+        <DECIMAL_FLOATING_CONSTANT>
+        | <HEXADECIMAL_FLOATING_CONSTANT>
+     >
+     | < #DECIMAL_FLOATING_CONSTANT :
+        (<FRACTIONAL_CONSTANT> (<EXPONENT_PART>)? (<FLOATING_SUFFIX>)?)
+        | (<DIGIT_SEQUENCE> <EXPONENT_PART> (<FLOATING_SUFFIX>)?)
+     >
+     | < #HEXADECIMAL_FLOATING_CONSTANT :
+        (<HEXADECIMAL_PREFIX> <HEXADECIMAL_FRACTIONAL_CONSTANT> <BINARY_EXPONENT_PART> (<FLOATING_SUFFIX>)?)
+        | (<HEXADECIMAL_PREFIX> <HEXADECIMAL_DIGIT_SEQUENCE> <BINARY_EXPONENT_PART> (<FLOATING_SUFFIX>)?)
+     >
+     | < #FRACTIONAL_CONSTANT :
+        ((<DIGIT_SEQUENCE>)? "." <DIGIT_SEQUENCE>)
+        | (<DIGIT_SEQUENCE> ".")
+     >
+     | < #EXPONENT_PART : ["e","E"] (<SIGN>)? <DIGIT_SEQUENCE> >
+     | < #SIGN : ["+","-"] >
+     | < #DIGIT_SEQUENCE : (<DIGIT>)+ >
+     | < #HEXADECIMAL_FRACTIONAL_CONSTANT :
+        ((<HEXADECIMAL_DIGIT_SEQUENCE>) "." <HEXADECIMAL_DIGIT_SEQUENCE>)
+        | (<HEXADECIMAL_DIGIT_SEQUENCE> ".")
+     >
+     | < #BINARY_EXPONENT_PART : ["p","P"] (<SIGN>)? <DIGIT_SEQUENCE> >
+     | < #HEXADECIMAL_DIGIT_SEQUENCE : (<HEXADECIMAL_DIGIT>)+ >
+     | < #FLOATING_SUFFIX : ["f","l","F","L"] >
+     | < ENUMERATION_CONSTANT : <IDENTIFIER> >
+     | < CHARACTER_CONSTANT : (["L","u","U"])? "'" <C_CHAR_SEQUENCE> "'" >
+     | < #C_CHAR_SEQUENCE : (<C_CHAR>)+ >
+     | < #C_CHAR :
+        (~["\\", "'", "\n", "\r", "\t"])
+        | <ESCAPE_SEQUENCE>
+     >
+     | < #ESCAPE_SEQUENCE :
+        <SIMPLE_ESCAPE_SEQUENCE>
+        | <OCTAL_ESCAPE_SEQUENCE>
+        | <HEXADECIMAL_ESCAPE_SEQUENCE>
+        | <UNIVERSAL_CHARACTER_NAME>
+     >
+     | < #SIMPLE_ESCAPE_SEQUENCE : "\\" ["'", "\"", "a", "b", "f", "n", "r", "t", "v"] >
+     | < #OCTAL_ESCAPE_SEQUENCE : "\\" <OCTAL_DIGIT> (<OCTAL_DIGIT> (<OCTAL_DIGIT>)? )? >
+     | < #HEXADECIMAL_ESCAPE_SEQUENCE : "\\x" (<HEXADECIMAL_DIGIT>)+ >
+;

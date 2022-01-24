@@ -1,0 +1,254 @@
+PrimaryExpression :
+    <IDENTIFIER>
+    | <CONSTANT>
+    | <STRING_LITERAL>
+    | "(" Expression ")"
+    | GenericSelection
+    | PrimaryThisExpression
+;
+
+PrimaryThisExpression : <THIS> "." <IDENTIFIER>;
+
+GenericSelection :
+    <_GENERIC> "(" AssigmentExpression "," GenericAssocList ")"
+;
+
+//GenericAssocList :
+//    GenericAssociation
+//    | ( GenericAssocList "," GenericAssociation )
+//;
+
+GenericAssocList :
+    GenericAssociation [GenericAssocListPrim]
+;
+
+GenericAssocListPrim :
+    ("," GenericAssociation  [ GenericAssocListPrim])
+;
+
+GenericAssociation :
+    ( TypeName ":" AssigmentExpression )
+    | ( <DEFAULT> ":" AssigmentExpression )
+;
+
+// PostfixExpression :
+//     PrimaryExpression
+//     | ( PostfixExpression "[" Expression "]" )
+//     | ( PostfixExpression "(" [ArgumentExpressionList] ")" )
+//     | ( PostfixExpression "." <IDENTIFIER> )
+//     | ( PostfixExpression "->" <IDENTIFIER> )
+//     | ( PostfixExpression "++" )
+//     | ( PostfixExpression "-" )
+//     | ( "(" TypeName ")" "{" InitializerList "}" )
+//     | ( "(" TypeName ")" "{" InitializerList "," "}" )
+// ;
+
+PostfixExpression :
+    ( PrimaryExpression [PostfixExpressionPrim] )
+    | ( "(" TypeName ")" "{" InitializerList "}" [PostfixExpressionPrim] )
+    | ( "(" TypeName ")" "{" InitializerList "," "}" [PostfixExpressionPrim] )
+;
+
+PostfixExpressionPrim :
+     ( "[" Expression "]" [PostfixExpressionPrim] )
+     | ( "(" [ArgumentExpressionList] ")" [PostfixExpressionPrim] )
+     | ( "." <IDENTIFIER> [PostfixExpressionPrim] )
+     | ( "->" <IDENTIFIER> [PostfixExpressionPrim] )
+     | ( "++" [PostfixExpressionPrim] )
+     | ( "-" [PostfixExpressionPrim] )
+;
+
+
+//ArgumentExpressionList :
+//    AssigmentExpression
+//    | ( ArgumentExpressionList "," AssigmentExpression )
+//;
+
+ArgumentExpressionList :
+    AssigmentExpression [ArgumentExpressionListPrim]
+;
+
+ArgumentExpressionListPrim :
+    ("," AssigmentExpression  [ ArgumentExpressionListPrim])
+;
+
+UnaryExpression :
+    PostfixExpression
+    | ( "++" UnaryExpression )
+    | ( "-" UnaryExpression )
+    | ( UnaryOperator CastExpression )
+    | ( <SIZEOF> UnaryExpression )
+    | ( <SIZEOF> "(" TypeName ")" )
+    | ( <_ALIGNOF> "(" TypeName ")" )
+;
+
+UnaryOperator : "&" | "*" | "+" | "-" | "~" | "!" ;
+
+CastExpression :
+    UnaryExpression
+    | ( "(" TypeName ")" CastExpression )
+;
+
+//MultiplicativeExpression :
+//    CastExpression
+//    | (MultiplicativeExpression "*" CastExpression)
+//    | (MultiplicativeExpression "/" CastExpression)
+//    | (MultiplicativeExpression "%" CastExpression)
+//;
+
+MultiplicativeExpression :
+    CastExpression [MultiplicativeExpressionPrim]
+;
+
+MultiplicativeExpressionPrim :
+    ("*" CastExpression [MultiplicativeExpressionPrim] )
+    | ("/" CastExpression [MultiplicativeExpressionPrim] )
+    | ("%" CastExpression [MultiplicativeExpressionPrim] )
+;
+
+//AdditiveExpression :
+//    MultiplicativeExpression
+//    | (AdditiveExpression "+" MultiplicativeExpression)
+//    | (AdditiveExpression "-" MultiplicativeExpression)
+//;
+
+AdditiveExpression :
+    MultiplicativeExpression [AdditiveExpressionPrim]
+;
+
+AdditiveExpressionPrim :
+    ("+" MultiplicativeExpression [AdditiveExpressionPrim] )
+    | ("-" MultiplicativeExpression [AdditiveExpressionPrim] )
+;
+
+//ShiftExpression :
+//    AdditiveExpression
+//    | (ShiftExpression "<<" AdditiveExpression)
+//    | (ShiftExpression ">>" AdditiveExpression)
+//;
+
+ShiftExpression :
+    AdditiveExpression (("<<" | ">>") AdditiveExpression)*
+;
+
+// RelationalExpression :
+//     ShiftExpression
+//     | ( RelationalExpression "<" ShiftExpression )
+//     | ( RelationalExpression ">" ShiftExpression )
+//     | ( RelationalExpression "<=" ShiftExpression )
+//     | ( RelationalExpression "<=" ShiftExpression )
+// ;
+
+RelationalExpression :
+    ShiftExpression (( "<" | ">" | "<=" | ">=" ) ShiftExpression)*
+;
+
+// EqualityExpression :
+//     RelationalExpression
+//     | (EqualityExpression "==" RelationalExpression)
+//     | (EqualityExpression "!=" RelationalExpression)
+// ;
+
+EqualityExpression :
+    RelationalExpression (( "==" | "!=" ) RelationalExpression)*
+;
+
+//AndExpression :
+//    EqualityExpression
+//    | (AndExpression "&" EqualityExpression)
+//;
+
+AndExpression :
+    EqualityExpression [AndExpressionPrim]
+;
+
+AndExpressionPrim :
+    ("&" EqualityExpression [AndExpressionPrim])
+;
+
+//ExclusiveOrExpression :
+//    AndExpression
+//    | (ExclusiveOrExpression "^" AndExpression)
+//;
+
+ExclusiveOrExpression :
+    AndExpression [ExclusiveOrExpressionPrim]
+;
+
+ExclusiveOrExpressionPrim :
+    ("^" AndExpression [ExclusiveOrExpressionPrim])
+;
+
+//InclusiveOrExpression :
+//    ExclusiveOrExpression
+//    | (InclusiveOrExpression "|" ExclusiveOrExpression)
+//;
+
+InclusiveOrExpression :
+    ExclusiveOrExpression [InclusiveOrExpressionPrim]
+;
+
+InclusiveOrExpressionPrim :
+    ("|" ExclusiveOrExpression [InclusiveOrExpressionPrim])
+;
+
+//LogicalAndExpression :
+//    InclusiveOrExpression
+//    | (LogicalAndExpression "&&" InclusiveOrExpression)
+//;
+
+LogicalAndExpression :
+    InclusiveOrExpression [LogicalAndExpressionPrim]
+;
+
+LogicalAndExpressionPrim :
+    ("&&" InclusiveOrExpression [LogicalAndExpressionPrim])
+;
+
+//LogicalOrExpression :
+//    LogicalAndExpression
+//    | (LogicalOrExpression "||" LogicalAndExpression)
+//;
+
+LogicalOrExpression :
+    LogicalAndExpression [LogicalOrExpressionPrim]
+;
+
+LogicalOrExpressionPrim :
+    ("||" LogicalAndExpression [LogicalOrExpressionPrim])
+;
+
+//ConditionalExpression :
+//    LogicalOrExpression
+//    | (LogicalOrExpression "?" Expression ":" ConditionalExpression)
+//;
+
+ConditionalExpression :
+    LogicalOrExpression [ConditionalExpressionPrim]
+;
+
+ConditionalExpressionPrim :
+    ("?" Expression ":" ConditionalExpression [LogicalOrExpressionPrim])
+;
+
+AssigmentExpression :
+    SCAN ConditionalExpression
+    | (UnaryExpression AssigmentOperator  AssigmentExpression)
+;
+
+AssigmentOperator : "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" ;
+
+//Expression :
+//    AssigmentExpression
+//    | (Expression "," AssigmentExpression)
+//;
+
+Expression :
+    AssigmentExpression [ExpressionPrim]
+;
+
+ExpressionPrim :
+    ("," AssigmentExpression [ExpressionPrim])
+;
+
+ConstantExpression : ConditionalExpression;

@@ -1,0 +1,7 @@
+TOKEN #HeaderName :
+    <HEADER_NAME : ( "<" <H_CHAR_SEQUENCE> ">" ) | ( "\"" <Q_CHAR_SEQUENCE> "\"" ) >
+    < #H_CHAR_SEQUENCE : (<H_CHAR>)+ >
+    < #H_CHAR : ~[">", "\n"] >
+    < #Q_CHAR_SEQUENCE : (<Q_CHAR>)+ >
+    < #Q_CHAR : ~["\"", "\n"] >
+;

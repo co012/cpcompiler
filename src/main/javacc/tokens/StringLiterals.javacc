@@ -1,0 +1,9 @@
+TOKEN #StringLiteral :
+    < STRING_LITERAL : (<ENCODING_PREFIX>)? "\"" (<S_CHAR_SEQUENCE>)? "\"" >
+    | < #ENCODING_PREFIX : "u8" | "u" | "U" | "L" >
+    | < #S_CHAR_SEQUENCE : (<S_CHAR>)+ >
+    | < #S_CHAR :
+        ~["\"", "\\", "\n", "\r", "\t"]
+        | <ESCAPE_SEQUENCE>
+    >
+;

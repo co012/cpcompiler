@@ -1,0 +1,14 @@
+TOKEN #Identifier :
+    < IDENTIFIER :
+        <IDENTIFIER_NO_DIGIT> (<IDENTIFIER_NO_DIGIT> | <DIGIT>)*
+//        | (<IDENTIFIER> <IDENTIFIER_NO_DIGIT>)
+//        | (<IDENTIFIER> <DIGIT>)
+    >
+    | < #IDENTIFIER_NO_DIGIT :
+        <NO_DIGIT>
+        | <UNIVERSAL_CHARACTER_NAME>
+    >
+    | < #NO_DIGIT : (["_","a"-"z","A"-"Z"])+ >
+    | < #DIGIT : (["0"-"9"])+ >
+
+;

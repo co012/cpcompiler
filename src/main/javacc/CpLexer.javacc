@@ -6,7 +6,7 @@ UNPARSED :
 
 <IN_MULTI_LINE_COMMENT>
 UNPARSED :
-  <MULTI_LINE_COMMENT: "*/" >
+  <MULTI_LINE_COMMENT: "*/" > #Comment : C
 ;
 
 MORE :
@@ -19,12 +19,12 @@ MORE :
 
 <IN_SINGLE_LINE_COMMENT>
 UNPARSED :
-  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" >
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > #Comment : C
 ;
 
 <IN_PREPROCESSOR>
 UNPARSED :
-    <PREPROCESSOR: "\n" | "\r" | "\r\n">
+    <PREPROCESSOR: "\n" | "\r" | "\r\n"> #Preprocessor : C
 ;
 
 <IN_SINGLE_LINE_COMMENT,IN_MULTI_LINE_COMMENT, IN_PREPROCESSOR>

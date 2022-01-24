@@ -31,10 +31,10 @@ TypeSpecifier : <VOID> | <CHAR> | <SHORT> | <INT> | <LONG> | <FLOAT> | <DOUBLE> 
     | ClassSpecifier
 ;
 
-ClassSpecifier : <CLASS>;
+ClassSpecifier : (<CLASS> <IDENTIFIER>) ;
 
 StructOrUnionSpecifier :
-    (StructOrUnion [<IDENTIFIER>] "{" StructDeclarationList "}")
+    SCAN 3 (StructOrUnion [<IDENTIFIER>] "{" StructDeclarationList "}")
     |(StructOrUnion <IDENTIFIER>)
 ;
 

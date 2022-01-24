@@ -4,8 +4,8 @@ TranslationUnit :
 
 
 ExternalDeclaration:
-    SCAN Declaration
-    | ClassDefinition
+    SCAN 3 ClassDefinition
+    | SCAN Declaration
     | FunctionDefinition
 ;
 
@@ -17,6 +17,3 @@ DeclarationList :
     (Declaration)+
 ;
 
-//______________________
-
-ClassSpecifier : <CLASS>;

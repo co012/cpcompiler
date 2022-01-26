@@ -22,7 +22,7 @@ TOKEN #Constant :
         (<HEXADECIMAL_PREFIX> (<HEXADECIMAL_DIGIT>)*)
 //        | (<HEXADECIMAL_CONSTANT> <HEXADECIMAL_DIGIT>)
      >
-     | < #HEXADECIMAL_PREFIX : "0"["x","X"] >
+     | < #HEXADECIMAL_PREFIX : "0" ["x","X"] >
      | < #NON_ZERO_DIGIT : ["1"-"9"] >
      | < #OCTAL_DIGIT : ["0"-"7"] >
      | < #HEXADECIMAL_DIGIT : ["0"-"9","a"-"f","A"-"F"] >
@@ -48,15 +48,15 @@ TOKEN #Constant :
         | (<HEXADECIMAL_PREFIX> <HEXADECIMAL_DIGIT_SEQUENCE> <BINARY_EXPONENT_PART> (<FLOATING_SUFFIX>)?)
      >
      | < #FRACTIONAL_CONSTANT :
-        ((<DIGIT_SEQUENCE>)? "." <DIGIT_SEQUENCE>)
-        | (<DIGIT_SEQUENCE> ".")
+        ((<DIGIT_SEQUENCE>)? <POINT> <DIGIT_SEQUENCE>)
+        | (<DIGIT_SEQUENCE> <POINT>)
      >
      | < #EXPONENT_PART : ["e","E"] (<SIGN>)? <DIGIT_SEQUENCE> >
      | < #SIGN : ["+","-"] >
      | < #DIGIT_SEQUENCE : (<DIGIT>)+ >
      | < #HEXADECIMAL_FRACTIONAL_CONSTANT :
-        ((<HEXADECIMAL_DIGIT_SEQUENCE>) "." <HEXADECIMAL_DIGIT_SEQUENCE>)
-        | (<HEXADECIMAL_DIGIT_SEQUENCE> ".")
+        ((<HEXADECIMAL_DIGIT_SEQUENCE>) <POINT> <HEXADECIMAL_DIGIT_SEQUENCE>)
+        | (<HEXADECIMAL_DIGIT_SEQUENCE> <POINT>)
      >
      | < #BINARY_EXPONENT_PART : ["p","P"] (<SIGN>)? <DIGIT_SEQUENCE> >
      | < #HEXADECIMAL_DIGIT_SEQUENCE : (<HEXADECIMAL_DIGIT>)+ >

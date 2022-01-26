@@ -1,4 +1,4 @@
-import nodes.ClassDefinition;
+import nodes.*;
 import parser.*;
 
 import java.io.FileWriter;
@@ -28,8 +28,28 @@ public class Launcher {
             ASTUtility.changeClassToStruct(def);
         }
 
+        List<Declaration> declarationList = root.descendantsOfType(Declaration.class);
+        for (Declaration declaration: declarationList){
+            if(ASTUtility.isAnClassDeclaration(declaration)){
+                ASTUtility.convertClassDeclaration(declaration);
+            }
+        }
+
+        TranslationUnit unit = (TranslationUnit) root;
+        List<PostfixExpression> classExpressionList =
+                root.descendantsOfType(PrimaryExpression.class).stream()
+                        .filter(pe -> {
+                            Token identifier = pe.firstChildOfType(CPlusConstants.TokenType.IDENTIFIER);
+                            return identifier != null && unit.classIdentifiers.contains(identifier.getImage());
+                        })
+                        .map(pe -> pe.firstAncestorOfType(PostfixExpression.class))
+                        .toList();
+
+        for(PostfixExpression postfixExpression: classExpressionList){
+            ASTUtility.convertPostfixExpression(postfixExpression);
+        }
+
         FileWriter cFileWriter = new FileWriter("out/out.c");
-        FileWriter hFileWriter = new FileWriter("out/out.h");
         for(Token t: root.getAllTokens(true)){
             cFileWriter.write(t.getImage());
         }

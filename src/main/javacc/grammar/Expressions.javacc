@@ -2,20 +2,20 @@ PrimaryExpression :
     <IDENTIFIER>
     | <CONSTANT>
     | <STRING_LITERAL>
-    | "(" Expression ")"
+    | <LPAREN> Expression <RPAREN>
     | GenericSelection
     | PrimaryThisExpression
 ;
 
-PrimaryThisExpression : <THIS> "." <IDENTIFIER>;
+PrimaryThisExpression : <THIS> <POINT> <IDENTIFIER>;
 
 GenericSelection :
-    <_GENERIC> "(" AssigmentExpression "," GenericAssocList ")"
+    <_GENERIC> <LPAREN> AssigmentExpression <COMMA> GenericAssocList <RPAREN>
 ;
 
 //GenericAssocList :
 //    GenericAssociation
-//    | ( GenericAssocList "," GenericAssociation )
+//    | ( GenericAssocList <COMMA> GenericAssociation )
 //;
 
 GenericAssocList :
@@ -23,7 +23,7 @@ GenericAssocList :
 ;
 
 GenericAssocListPrim :
-    ("," GenericAssociation  [ GenericAssocListPrim])
+    (<COMMA> GenericAssociation  [ GenericAssocListPrim])
 ;
 
 GenericAssociation :
@@ -33,26 +33,26 @@ GenericAssociation :
 
 // PostfixExpression :
 //     PrimaryExpression
-//     | ( PostfixExpression "[" Expression "]" )
-//     | ( PostfixExpression "(" [ArgumentExpressionList] ")" )
-//     | ( PostfixExpression "." <IDENTIFIER> )
+//     | ( PostfixExpression <LBRACKET> Expression <RBRACKET> )
+//     | ( PostfixExpression <LPAREN> [ArgumentExpressionList] <RPAREN> )
+//     | ( PostfixExpression <POINT> <IDENTIFIER> )
 //     | ( PostfixExpression "->" <IDENTIFIER> )
 //     | ( PostfixExpression "++" )
 //     | ( PostfixExpression "-" )
-//     | ( "(" TypeName ")" "{" InitializerList "}" )
-//     | ( "(" TypeName ")" "{" InitializerList "," "}" )
+//     | ( <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <RBRACE> )
+//     | ( <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <COMMA> <RBRACE> )
 // ;
 
 PostfixExpression :
     ( PrimaryExpression [PostfixExpressionPrim] )
-    | ( "(" TypeName ")" "{" InitializerList "}" [PostfixExpressionPrim] )
-    | ( "(" TypeName ")" "{" InitializerList "," "}" [PostfixExpressionPrim] )
+    |  <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <RBRACE> =>|| [PostfixExpressionPrim]
+    | ( <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <COMMA> <RBRACE> [PostfixExpressionPrim] )
 ;
 
 PostfixExpressionPrim :
-     ( "[" Expression "]" [PostfixExpressionPrim] )
-     | ( "(" [ArgumentExpressionList] ")" [PostfixExpressionPrim] )
-     | ( "." <IDENTIFIER> [PostfixExpressionPrim] )
+     ( <LBRACKET> Expression <RBRACKET> [PostfixExpressionPrim] )
+     | ( <LPAREN> [ArgumentExpressionList] <RPAREN> [PostfixExpressionPrim] )
+     | ( <POINT> <IDENTIFIER> [PostfixExpressionPrim] )
      | ( "->" <IDENTIFIER> [PostfixExpressionPrim] )
      | ( "++" [PostfixExpressionPrim] )
      | ( "-" [PostfixExpressionPrim] )
@@ -61,7 +61,7 @@ PostfixExpressionPrim :
 
 //ArgumentExpressionList :
 //    AssigmentExpression
-//    | ( ArgumentExpressionList "," AssigmentExpression )
+//    | ( ArgumentExpressionList <COMMA> AssigmentExpression )
 //;
 
 ArgumentExpressionList :
@@ -69,7 +69,7 @@ ArgumentExpressionList :
 ;
 
 ArgumentExpressionListPrim :
-    ("," AssigmentExpression  [ ArgumentExpressionListPrim])
+    (<COMMA> AssigmentExpression  [ ArgumentExpressionListPrim])
 ;
 
 UnaryExpression :
@@ -78,15 +78,15 @@ UnaryExpression :
     | ( "-" UnaryExpression )
     | ( UnaryOperator CastExpression )
     | ( <SIZEOF> UnaryExpression )
-    | ( <SIZEOF> "(" TypeName ")" )
-    | ( <_ALIGNOF> "(" TypeName ")" )
+    | ( <SIZEOF> <LPAREN> TypeName <RPAREN> )
+    | ( <_ALIGNOF> <LPAREN> TypeName <RPAREN> )
 ;
 
 UnaryOperator : "&" | "*" | "+" | "-" | "~" | "!" ;
 
 CastExpression :
     UnaryExpression
-    | ( "(" TypeName ")" CastExpression )
+    | ( <LPAREN> TypeName <RPAREN> CastExpression )
 ;
 
 //MultiplicativeExpression :
@@ -232,15 +232,15 @@ ConditionalExpressionPrim :
 ;
 
 AssigmentExpression :
-    SCAN ConditionalExpression
-    | (UnaryExpression AssigmentOperator  AssigmentExpression)
+     UnaryExpression AssigmentOperator =>|| AssigmentExpression
+    | ConditionalExpression
 ;
 
-AssigmentOperator : "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" ;
+AssigmentOperator : <ASSIGN> | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" ;
 
 //Expression :
 //    AssigmentExpression
-//    | (Expression "," AssigmentExpression)
+//    | (Expression <COMMA> AssigmentExpression)
 //;
 
 Expression :
@@ -248,7 +248,7 @@ Expression :
 ;
 
 ExpressionPrim :
-    ("," AssigmentExpression [ExpressionPrim])
+    (<COMMA> AssigmentExpression [ExpressionPrim])
 ;
 
 ConstantExpression : ConditionalExpression;

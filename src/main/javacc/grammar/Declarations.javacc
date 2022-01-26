@@ -1,5 +1,5 @@
 Declaration :
-    ( DeclarationSpecifiers [InitDeclaratorList] ";")
+    ( DeclarationSpecifiers [InitDeclaratorList] <SEMICOLON>)
     | StaticAssertDeclaration
 ;
 
@@ -13,15 +13,15 @@ DeclarationSpecifiers :
 
 //InitDeclaratorList :
 //    InitDeclarator
-//    | (InitDeclaratorList "," InitDeclarator)
+//    | (InitDeclaratorList <COMMA> InitDeclarator)
 //;
 
 InitDeclaratorList :
-    InitDeclarator ("," InitDeclarator)*
+    InitDeclarator (<COMMA> InitDeclarator)*
 ;
 
 InitDeclarator :
-    Declarator ["=" Initializer]
+    Declarator [<ASSIGN> Initializer]
 ;
 
 StorageClassSpecifier : <TYPEDEF> | <EXTERN> | <STATIC> | <_THREAD_LOCAL> | <AUTO> | <REGISTER> ;
@@ -34,7 +34,7 @@ TypeSpecifier : <VOID> | <CHAR> | <SHORT> | <INT> | <LONG> | <FLOAT> | <DOUBLE> 
 ClassSpecifier : (<CLASS> <IDENTIFIER>) ;
 
 StructOrUnionSpecifier :
-    SCAN 3 (StructOrUnion [<IDENTIFIER>] "{" StructDeclarationList "}")
+    SCAN 3 (StructOrUnion [<IDENTIFIER>] <LBRACE> StructDeclarationList <RBRACE>)
     |(StructOrUnion <IDENTIFIER>)
 ;
 
@@ -45,7 +45,7 @@ StructDeclarationList :
 ;
 
 StructDeclaration :
-    (SpecifierQualifierList [StructDeclaratorList] ";")
+    (SpecifierQualifierList [StructDeclaratorList] <SEMICOLON>)
     | StaticAssertDeclaration
 ;
 
@@ -56,7 +56,7 @@ SpecifierQualifierList :
 
 //StructDeclaratorList :
 //    StructDeclarator
-//    | (StructDeclaratorList "," StructDeclarator)
+//    | (StructDeclaratorList <COMMA> StructDeclarator)
 //;
 
 StructDeclaratorList :
@@ -64,7 +64,7 @@ StructDeclaratorList :
 ;
 
 StructDeclaratorListPrim :
-    ("," StructDeclarator [StructDeclaratorListPrim])
+    (<COMMA> StructDeclarator [StructDeclaratorListPrim])
 ;
 
 StructDeclarator :
@@ -73,14 +73,14 @@ StructDeclarator :
 ;
 
 EnumSpecifier :
-    (<ENUM> [<IDENTIFIER>] "{" EnumeratorList "}")
-    |(<ENUM> [<IDENTIFIER>] "{" EnumeratorList "," "}")
+    (<ENUM> [<IDENTIFIER>] <LBRACE> EnumeratorList <RBRACE>)
+    |(<ENUM> [<IDENTIFIER>] <LBRACE> EnumeratorList <COMMA> <RBRACE>)
     |(<ENUM> <IDENTIFIER>)
 ;
 
 //EnumeratorList :
 //    Enumerator
-//    | (EnumeratorList "," Enumerator)
+//    | (EnumeratorList <COMMA> Enumerator)
 //;
 
 EnumeratorList :
@@ -88,47 +88,47 @@ EnumeratorList :
 ;
 
 EnumeratorListPrim :
-    ("," Enumerator [EnumeratorListPrim])
+    (<COMMA> Enumerator [EnumeratorListPrim])
 ;
 
 Enumerator :
     <ENUMERATION_CONSTANT>
-    | (<ENUMERATION_CONSTANT> "=" ConstantExpression)
+    | (<ENUMERATION_CONSTANT> <ASSIGN> ConstantExpression)
 ;
 
-AtomicTypeSpecifier : <_ATOMIC> "(" TypeName ")" ;
+AtomicTypeSpecifier : <_ATOMIC> <LPAREN> TypeName <RPAREN> ;
 
 TypeQualifier : <CONST> | <RESTRICT> | <VOLATILE> | <_ATOMIC> ;
 
 FunctionSpecifier : <INLINE> | <_NORETURN> ;
 
-AlignmentSpecifier : (<_ALIGNAS> "(" TypeName ")" ) | (<_ALIGNAS> "(" ConstantExpression ")") ;
+AlignmentSpecifier : (<_ALIGNAS> <LPAREN> TypeName <RPAREN> ) | (<_ALIGNAS> <LPAREN> ConstantExpression <RPAREN>) ;
 
 Declarator : [Pointer] DirectDeclarator;
 
 //DirectDeclarator :
 //    <IDENTIFIER>
-//    | "(" Declarator ")"
-//    | (DirectDeclarator "[" [TypeQualifierList] [AssigmentExpression] "]")
-//    | (DirectDeclarator "[" <STATIC> [TypeQualifierList] [AssigmentExpression] "]")
-//    | (DirectDeclarator "[" [TypeQualifierList] <STATIC> [AssigmentExpression] "]")
-//    | (DirectDeclarator "[" [TypeQualifierList] "*" "]")
-//    | (DirectDeclarator "(" ParameterTypeList ")")
-//    | (DirectDeclarator "(" [IdentifierList] ")")
+//    | <LPAREN> Declarator <RPAREN>
+//    | (DirectDeclarator <LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
+//    | (DirectDeclarator <LBRACKET> <STATIC> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
+//    | (DirectDeclarator <LBRACKET> [TypeQualifierList] <STATIC> [AssigmentExpression] <RBRACKET>)
+//    | (DirectDeclarator <LBRACKET> [TypeQualifierList] "*" <RBRACKET>)
+//    | (DirectDeclarator <LPAREN> ParameterTypeList <RPAREN>)
+//    | (DirectDeclarator <LPAREN> [IdentifierList] <RPAREN>)
 //;
 
 DirectDeclarator :
     (<IDENTIFIER> [DirectDeclaratorPrim])
-    | ("(" Declarator ")" [DirectDeclaratorPrim])
+    | (<LPAREN> Declarator <RPAREN> [DirectDeclaratorPrim])
 ;
 
 DirectDeclaratorPrim :
-    ("[" [TypeQualifierList] [AssigmentExpression] "]" [DirectDeclaratorPrim])
-    | ("[" <STATIC> [TypeQualifierList] [AssigmentExpression] "]" [DirectDeclaratorPrim])
-    | ("[" [TypeQualifierList] <STATIC> [AssigmentExpression] "]" [DirectDeclaratorPrim])
-    | ("[" [TypeQualifierList] "*" "]" [DirectDeclaratorPrim])
-    | ("(" ParameterTypeList ")" [DirectDeclaratorPrim])
-    | ("(" [IdentifierList] ")" [DirectDeclaratorPrim])
+    (<LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
+    | (<LBRACKET> <STATIC> [TypeQualifierList] [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
+    | (<LBRACKET> [TypeQualifierList] <STATIC> [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
+    | (<LBRACKET> [TypeQualifierList] "*" <RBRACKET> [DirectDeclaratorPrim])
+    | (<LPAREN> ParameterTypeList <RPAREN> [DirectDeclaratorPrim])
+    | (<LPAREN> [IdentifierList] <RPAREN> [DirectDeclaratorPrim])
 ;
 
 Pointer :
@@ -146,16 +146,16 @@ TypeQualifierList :
 
 ParameterTypeList :
     ParameterList
-    | (ParameterList "," "...")
+    | (ParameterList <COMMA> "...")
 ;
 
 //ParameterList :
 //    ParameterDeclaration
-//    | (ParameterList "," ParameterDeclaration)
+//    | (ParameterList <COMMA> ParameterDeclaration)
 //;
 
 ParameterList :
-    ParameterDeclaration ("," ParameterDeclaration)*
+    ParameterDeclaration (<COMMA> ParameterDeclaration)*
 ;
 
 //ParameterDeclaration :
@@ -169,7 +169,7 @@ ParameterDeclaration :
 
 //IdentifierList:
 //    <IDENTIFIER>
-//    | (IdentifierList "," <IDENTIFIER>)
+//    | (IdentifierList <COMMA> <IDENTIFIER>)
 //;
 
 IdentifierList:
@@ -177,7 +177,7 @@ IdentifierList:
 ;
 
 IdentifierListPrim :
-    ("," <IDENTIFIER> [IdentifierListPrim])
+    (<COMMA> <IDENTIFIER> [IdentifierListPrim])
 ;
 
 TypeName : SpecifierQualifierList [AbstractDeclarator];
@@ -188,28 +188,28 @@ AbstractDeclarator :
 ;
 
 DirectAbstractDeclarator :
-    "(" AbstractDeclarator ")" (DirectAbstractDeclarator)*
+    <LPAREN> AbstractDeclarator <RPAREN> (DirectAbstractDeclarator)*
 ;
 
 DirectAbstractDeclaratorPrim :
-    (SCAN "[" TypeQualifierList <STATIC> =>|| AssigmentExpression "]")
-    | (SCAN 2 "[" <STATIC> [TypeQualifierList] AssigmentExpression "]")
-    | (SCAN "[" [TypeQualifierList] [AssigmentExpression] "]")
-    | (SCAN 2 "[" "*" "]")
-    | ("(" [ParameterTypeList] ")")
+    (SCAN <LBRACKET> TypeQualifierList <STATIC> =>|| AssigmentExpression <RBRACKET>)
+    | (SCAN 2 <LBRACKET> <STATIC> [TypeQualifierList] AssigmentExpression <RBRACKET>)
+    | (SCAN <LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
+    | (SCAN 2 <LBRACKET> "*" <RBRACKET>)
+    | (<LPAREN> [ParameterTypeList] <RPAREN>)
 ;
 
 TypedefName : <IDENTIFIER> ;
 
 Initializer :
     AssigmentExpression
-    | ("{" InitializerList "}")
-    | ("{" InitializerList "," "}")
+    | (<LBRACE> InitializerList <RBRACE>)
+    | (<LBRACE> InitializerList <COMMA> <RBRACE>)
 ;
 
 //InitializerList :
 //    ([Designation] Initializer)
-//    | (InitializerList "," [Designation] Initializer)
+//    | (InitializerList <COMMA> [Designation] Initializer)
 //;
 
 InitializerList :
@@ -217,10 +217,10 @@ InitializerList :
 ;
 
 InitializerListPrim :
-    ("," [Designation] Initializer [InitializerListPrim])
+    (<COMMA> [Designation] Initializer [InitializerListPrim])
 ;
 
-Designation : DesignationList "=";
+Designation : DesignationList <ASSIGN>;
 
 //DesignationList :
 //    Designator
@@ -236,10 +236,10 @@ DesignationListPrim :
 ;
 
 Designator:
-    ("[" ConstantExpression "]" )
-    | "." <IDENTIFIER>
+    (<LBRACKET> ConstantExpression <RBRACKET> )
+    | <POINT> <IDENTIFIER>
 ;
 
 StaticAssertDeclaration :
-    (<_STATIC_ASSERT> "(" ConstantExpression ["," <STRING_LITERAL>] ")" ";")
+    (<_STATIC_ASSERT> <LPAREN> ConstantExpression [<COMMA> <STRING_LITERAL>] <RPAREN> <SEMICOLON>)
 ;

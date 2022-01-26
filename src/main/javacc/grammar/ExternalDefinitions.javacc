@@ -2,6 +2,24 @@ TranslationUnit :
     (ExternalDeclaration)+
 ;
 
+INJECT TranslationUnit :
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.HashSet;
+{
+    private HashMap<String, String> identifierClassNameMap = new HashMap<> ();
+    public final HashSet<String> classIdentifiers = new HashSet<>();
+
+    public Optional<String> getClassName(String identifier) {
+        String className = identifierClassNameMap.get(identifier);
+        return Optional.ofNullable(className);
+    }
+
+    public void addIdentifierClassNameEntry(String identifier, String className) {
+        identifierClassNameMap.put(identifier, className);
+    }
+}
+
 
 ExternalDeclaration:
     SCAN 3 ClassDefinition
@@ -11,7 +29,7 @@ ExternalDeclaration:
 
 FunctionDefinition : DeclarationSpecifiers Declarator [DeclarationList] CompoundStatement ;
 
-ClassDefinition : <CLASS> <IDENTIFIER> "{" [StructDeclarationList] (FunctionDefinition)* "}" ;
+ClassDefinition : <CLASS> <IDENTIFIER> <LBRACE> [StructDeclarationList] (FunctionDefinition)* <RBRACE> ;
 
 DeclarationList :
     (Declaration)+

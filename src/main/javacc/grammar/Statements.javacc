@@ -13,7 +13,32 @@ LabeledStatement :
     | (<DEFAULT> ":" Statement)
 ;
 
-CompoundStatement : "{" [BlockItemList] "}" ;
+CompoundStatement : <LBRACE> [BlockItemList] <RBRACE> ;
+INJECT CompoundStatement :
+import java.util.HashMap;
+import java.util.Optional;
+{
+    private HashMap<String,String> identifierClassNameMap = new HashMap<>();
+
+    public Optional<String> getClassName(String identifier){
+        String className = identifierClassNameMap.get(identifier);
+        if(className == null) return getClassNameFromAncestor(identifier);
+        return Optional.of(className);
+    }
+
+    private Optional<String> getClassNameFromAncestor(String identifier){
+        CompoundStatement ancestor = firstAncestorOfType(CompoundStatement.class);
+        if (ancestor==null){
+            TranslationUnit translationUnit = firstAncestorOfType(TranslationUnit.class);
+            return translationUnit.getClassName(identifier);
+        }
+        return ancestor.getClassName(identifier);
+    }
+
+    public void addIdentifierClassNameEntry(String identifier, String className){
+        identifierClassNameMap.put(identifier, className);
+    }
+}
 
 BlockItemList : (BlockItem)+ ;
 
@@ -22,24 +47,24 @@ BlockItem :
     | Statement
 ;
 
-ExpressionStatement : [Expression] ";" ;
+ExpressionStatement : [Expression] <SEMICOLON> ;
 
 SelectionStatement :
-    (<IF> "(" Expression ")" Statement)
-    | (<IF> "(" Expression ")" Statement <ELSE> Statement)
-    | (<SWITCH> "(" Expression ")" Statement)
+    (<IF> <LPAREN> Expression <RPAREN> Statement)
+    | (<IF> <LPAREN> Expression <RPAREN> Statement <ELSE> Statement)
+    | (<SWITCH> <LPAREN> Expression <RPAREN> Statement)
 ;
 
 IterationStatement :
-    (<WHILE> "(" Expression ")" Statement)
-    | (<DO> Statement <WHILE> "(" Expression ")")
-    | (<FOR> "(" [Expression] ";" [Expression] ";" [Expression] ")" Statement)
-    | (<FOR> "(" Declaration [Expression] ";" [Expression] ")" Statement)
+    (<WHILE> <LPAREN> Expression <RPAREN> Statement)
+    | (<DO> Statement <WHILE> <LPAREN> Expression <RPAREN>)
+    | (<FOR> <LPAREN> [Expression] <SEMICOLON> [Expression] <SEMICOLON> [Expression] <RPAREN> Statement)
+    | (<FOR> <LPAREN> Declaration [Expression] <SEMICOLON> [Expression] <RPAREN> Statement)
 ;
 
 JumpStatement :
     (<GOTO> <IDENTIFIER>)
-    | (<CONTINUE> ";")
-    | (<BREAK> ";")
-    | (<RETURN> [Expression] ";")
+    | (<CONTINUE> <SEMICOLON>)
+    | (<BREAK> <SEMICOLON>)
+    | (<RETURN> [Expression] <SEMICOLON>)
 ;

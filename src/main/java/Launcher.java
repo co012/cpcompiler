@@ -16,7 +16,19 @@ public class Launcher {
             return;
         }
 
-        Path path = Path.of(args[0]);
+        for (String filePath : args) {
+            Path path = Path.of(filePath);
+            if(!Files.exists(path)){
+                System.out.println("Couldn't find file "+ filePath);
+                continue;
+            }
+            convertFile(path);
+        }
+
+
+    }
+
+    private static void convertFile(Path path) throws IOException, ParseException {
         CPlusParser parser = new CPlusParser(path);
         parser.parse();
         Node root = parser.rootNode();
@@ -49,7 +61,9 @@ public class Launcher {
             ASTUtility.convertPostfixExpression(postfixExpression);
         }
 
-        FileWriter cFileWriter = new FileWriter("out/out.c");
+        String fileName = path.getFileName().toString().replaceAll(".cp", ".c");
+
+        FileWriter cFileWriter = new FileWriter("out/"+fileName);
         for(Token t: root.getAllTokens(true)){
             cFileWriter.write(t.getImage());
         }
@@ -57,6 +71,5 @@ public class Launcher {
 
         cFileWriter.flush();
         cFileWriter.close();
-
     }
 }

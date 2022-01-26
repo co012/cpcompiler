@@ -101,7 +101,7 @@ public class ASTUtility {
         thisParameter.addChild(Token.newToken(CPlusConstants.TokenType.STRUCT, "struct", null));
         thisParameter.addChild(Token.newToken(CPlusConstants.TokenType.WHITESPACE, " ", null));
         thisParameter.addChild(Token.newToken(CPlusConstants.TokenType.IDENTIFIER, structName, null));
-        thisParameter.addChild(Token.newToken(CPlusConstants.TokenType._TOKEN_3, "*", null));
+        thisParameter.addChild(Token.newToken(STAR, "*", null));
         thisParameter.addChild(Token.newToken(CPlusConstants.TokenType.WHITESPACE, " ", null));
         thisParameter.addChild(Token.newToken(CPlusConstants.TokenType.IDENTIFIER, "this", null));
         return thisParameter;
@@ -131,7 +131,7 @@ public class ASTUtility {
                 }
             }else{
                 Token point = thisExpression.firstChildOfType(POINT);
-                thisExpression.replaceChild(point,Token.newToken(_TOKEN_107, "->",null));
+                thisExpression.replaceChild(point,Token.newToken(ARROW, "->",null));
             }
 
         }

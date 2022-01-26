@@ -7,7 +7,7 @@
 //    >
 //;
 
-TOKEN #Punctuator :
+TOKEN #Delimiter :
     <POINT : ".">
     | < LPAREN: "(" >
     | < RPAREN: ")" >
@@ -18,4 +18,42 @@ TOKEN #Punctuator :
     | < SEMICOLON: ";" >
     | < COMMA: "," >
     | < ASSIGN: "=" >
+;
+
+TOKEN #Operator :
+ < GT: ">" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < EQ: "==" >
+| < LE: "<=" >
+| < GE: ">=" >
+| < NE: "!=" >
+| < SC_OR: "||" >
+| < SC_AND: "&&" >
+| < INCR: "++" >
+| < DECR: "--" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
+| < LSHIFT: "<<" >
+| < PLUSASSIGN: "+=" >
+| < MINUSASSIGN: "-=" >
+| < STARASSIGN: "*=" >
+| < SLASHASSIGN: "/=" >
+| < ANDASSIGN: "&=" >
+| < ORASSIGN: "|=" >
+| < XORASSIGN: "^=" >
+| < REMASSIGN: "%=" >
+| < LEFT_SHIFT_ASSIGN: "<<=" >
+| < RIGHT_SHIFT: ">>" >
+| < RIGHT_SHIFT_ASSIGN: ">>=" >
+| < ARROW : "->">
 ;

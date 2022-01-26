@@ -8,9 +8,9 @@ Statement :
 ;
 
 LabeledStatement :
-    (<IDENTIFIER> ":" Statement)
-    | (<CASE> ConstantExpression ":" Statement)
-    | (<DEFAULT> ":" Statement)
+    (<IDENTIFIER> <COLON> Statement)
+    | (<CASE> ConstantExpression <COLON> Statement)
+    | (<DEFAULT> <COLON> Statement)
 ;
 
 CompoundStatement : <LBRACE> [BlockItemList] <RBRACE> ;

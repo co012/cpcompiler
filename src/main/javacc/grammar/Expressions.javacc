@@ -27,8 +27,8 @@ GenericAssocListPrim :
 ;
 
 GenericAssociation :
-    ( TypeName ":" AssigmentExpression )
-    | ( <DEFAULT> ":" AssigmentExpression )
+    ( TypeName <COLON> AssigmentExpression )
+    | ( <DEFAULT> <COLON> AssigmentExpression )
 ;
 
 // PostfixExpression :
@@ -36,9 +36,9 @@ GenericAssociation :
 //     | ( PostfixExpression <LBRACKET> Expression <RBRACKET> )
 //     | ( PostfixExpression <LPAREN> [ArgumentExpressionList] <RPAREN> )
 //     | ( PostfixExpression <POINT> <IDENTIFIER> )
-//     | ( PostfixExpression "->" <IDENTIFIER> )
-//     | ( PostfixExpression "++" )
-//     | ( PostfixExpression "-" )
+//     | ( PostfixExpression <ARROW> <IDENTIFIER> )
+//     | ( PostfixExpression <INCR> )
+//     | ( PostfixExpression <MINUS> )
 //     | ( <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <RBRACE> )
 //     | ( <LPAREN> TypeName <RPAREN> <LBRACE> InitializerList <COMMA> <RBRACE> )
 // ;
@@ -53,9 +53,9 @@ PostfixExpressionPrim :
      ( <LBRACKET> Expression <RBRACKET> [PostfixExpressionPrim] )
      | ( <LPAREN> [ArgumentExpressionList] <RPAREN> [PostfixExpressionPrim] )
      | ( <POINT> <IDENTIFIER> [PostfixExpressionPrim] )
-     | ( "->" <IDENTIFIER> [PostfixExpressionPrim] )
-     | ( "++" [PostfixExpressionPrim] )
-     | ( "-" [PostfixExpressionPrim] )
+     | ( <ARROW> <IDENTIFIER> [PostfixExpressionPrim] )
+     | ( <INCR> [PostfixExpressionPrim] )
+     | ( <MINUS> [PostfixExpressionPrim] )
 ;
 
 
@@ -74,15 +74,15 @@ ArgumentExpressionListPrim :
 
 UnaryExpression :
     PostfixExpression
-    | ( "++" UnaryExpression )
-    | ( "-" UnaryExpression )
+    | ( <INCR> UnaryExpression )
+    | ( <MINUS> UnaryExpression )
     | ( UnaryOperator CastExpression )
     | ( <SIZEOF> UnaryExpression )
     | ( <SIZEOF> <LPAREN> TypeName <RPAREN> )
     | ( <_ALIGNOF> <LPAREN> TypeName <RPAREN> )
 ;
 
-UnaryOperator : "&" | "*" | "+" | "-" | "~" | "!" ;
+UnaryOperator : <BIT_AND> | <STAR> | <PLUS> | <MINUS> | <TILDE> | <BANG> ;
 
 CastExpression :
     UnaryExpression
@@ -91,9 +91,9 @@ CastExpression :
 
 //MultiplicativeExpression :
 //    CastExpression
-//    | (MultiplicativeExpression "*" CastExpression)
-//    | (MultiplicativeExpression "/" CastExpression)
-//    | (MultiplicativeExpression "%" CastExpression)
+//    | (MultiplicativeExpression <STAR> CastExpression)
+//    | (MultiplicativeExpression <SLASH> CastExpression)
+//    | (MultiplicativeExpression <REM> CastExpression)
 //;
 
 MultiplicativeExpression :
@@ -101,15 +101,15 @@ MultiplicativeExpression :
 ;
 
 MultiplicativeExpressionPrim :
-    ("*" CastExpression [MultiplicativeExpressionPrim] )
-    | ("/" CastExpression [MultiplicativeExpressionPrim] )
-    | ("%" CastExpression [MultiplicativeExpressionPrim] )
+    (<STAR> CastExpression [MultiplicativeExpressionPrim] )
+    | (<SLASH> CastExpression [MultiplicativeExpressionPrim] )
+    | (<REM> CastExpression [MultiplicativeExpressionPrim] )
 ;
 
 //AdditiveExpression :
 //    MultiplicativeExpression
-//    | (AdditiveExpression "+" MultiplicativeExpression)
-//    | (AdditiveExpression "-" MultiplicativeExpression)
+//    | (AdditiveExpression <PLUS> MultiplicativeExpression)
+//    | (AdditiveExpression <MINUS> MultiplicativeExpression)
 //;
 
 AdditiveExpression :
@@ -117,45 +117,45 @@ AdditiveExpression :
 ;
 
 AdditiveExpressionPrim :
-    ("+" MultiplicativeExpression [AdditiveExpressionPrim] )
-    | ("-" MultiplicativeExpression [AdditiveExpressionPrim] )
+    (<PLUS> MultiplicativeExpression [AdditiveExpressionPrim] )
+    | (<MINUS> MultiplicativeExpression [AdditiveExpressionPrim] )
 ;
 
 //ShiftExpression :
 //    AdditiveExpression
-//    | (ShiftExpression "<<" AdditiveExpression)
-//    | (ShiftExpression ">>" AdditiveExpression)
+//    | (ShiftExpression <LSHIFT> AdditiveExpression)
+//    | (ShiftExpression <RIGHT_SHIFT> AdditiveExpression)
 //;
 
 ShiftExpression :
-    AdditiveExpression (("<<" | ">>") AdditiveExpression)*
+    AdditiveExpression ((<LSHIFT> | <RIGHT_SHIFT>) AdditiveExpression)*
 ;
 
 // RelationalExpression :
 //     ShiftExpression
-//     | ( RelationalExpression "<" ShiftExpression )
-//     | ( RelationalExpression ">" ShiftExpression )
-//     | ( RelationalExpression "<=" ShiftExpression )
-//     | ( RelationalExpression "<=" ShiftExpression )
+//     | ( RelationalExpression <LT> ShiftExpression )
+//     | ( RelationalExpression <GT> ShiftExpression )
+//     | ( RelationalExpression <LE> ShiftExpression )
+//     | ( RelationalExpression <LE> ShiftExpression )
 // ;
 
 RelationalExpression :
-    ShiftExpression (( "<" | ">" | "<=" | ">=" ) ShiftExpression)*
+    ShiftExpression (( <LT> | <GT> | <LE> | <GE> ) ShiftExpression)*
 ;
 
 // EqualityExpression :
 //     RelationalExpression
-//     | (EqualityExpression "==" RelationalExpression)
-//     | (EqualityExpression "!=" RelationalExpression)
+//     | (EqualityExpression <EQ> RelationalExpression)
+//     | (EqualityExpression <NE> RelationalExpression)
 // ;
 
 EqualityExpression :
-    RelationalExpression (( "==" | "!=" ) RelationalExpression)*
+    RelationalExpression (( <EQ> | <NE> ) RelationalExpression)*
 ;
 
 //AndExpression :
 //    EqualityExpression
-//    | (AndExpression "&" EqualityExpression)
+//    | (AndExpression <BIT_AND> EqualityExpression)
 //;
 
 AndExpression :
@@ -163,12 +163,12 @@ AndExpression :
 ;
 
 AndExpressionPrim :
-    ("&" EqualityExpression [AndExpressionPrim])
+    (<BIT_AND> EqualityExpression [AndExpressionPrim])
 ;
 
 //ExclusiveOrExpression :
 //    AndExpression
-//    | (ExclusiveOrExpression "^" AndExpression)
+//    | (ExclusiveOrExpression <XOR> AndExpression)
 //;
 
 ExclusiveOrExpression :
@@ -176,12 +176,12 @@ ExclusiveOrExpression :
 ;
 
 ExclusiveOrExpressionPrim :
-    ("^" AndExpression [ExclusiveOrExpressionPrim])
+    (<XOR> AndExpression [ExclusiveOrExpressionPrim])
 ;
 
 //InclusiveOrExpression :
 //    ExclusiveOrExpression
-//    | (InclusiveOrExpression "|" ExclusiveOrExpression)
+//    | (InclusiveOrExpression <BIT_OR> ExclusiveOrExpression)
 //;
 
 InclusiveOrExpression :
@@ -189,12 +189,12 @@ InclusiveOrExpression :
 ;
 
 InclusiveOrExpressionPrim :
-    ("|" ExclusiveOrExpression [InclusiveOrExpressionPrim])
+    (<BIT_OR> ExclusiveOrExpression [InclusiveOrExpressionPrim])
 ;
 
 //LogicalAndExpression :
 //    InclusiveOrExpression
-//    | (LogicalAndExpression "&&" InclusiveOrExpression)
+//    | (LogicalAndExpression <SC_AND> InclusiveOrExpression)
 //;
 
 LogicalAndExpression :
@@ -202,12 +202,12 @@ LogicalAndExpression :
 ;
 
 LogicalAndExpressionPrim :
-    ("&&" InclusiveOrExpression [LogicalAndExpressionPrim])
+    (<SC_AND> InclusiveOrExpression [LogicalAndExpressionPrim])
 ;
 
 //LogicalOrExpression :
 //    LogicalAndExpression
-//    | (LogicalOrExpression "||" LogicalAndExpression)
+//    | (LogicalOrExpression <SC_OR> LogicalAndExpression)
 //;
 
 LogicalOrExpression :
@@ -215,12 +215,12 @@ LogicalOrExpression :
 ;
 
 LogicalOrExpressionPrim :
-    ("||" LogicalAndExpression [LogicalOrExpressionPrim])
+    (<SC_OR> LogicalAndExpression [LogicalOrExpressionPrim])
 ;
 
 //ConditionalExpression :
 //    LogicalOrExpression
-//    | (LogicalOrExpression "?" Expression ":" ConditionalExpression)
+//    | (LogicalOrExpression <HOOK> Expression <COLON> ConditionalExpression)
 //;
 
 ConditionalExpression :
@@ -228,7 +228,7 @@ ConditionalExpression :
 ;
 
 ConditionalExpressionPrim :
-    ("?" Expression ":" ConditionalExpression [LogicalOrExpressionPrim])
+    (<HOOK> Expression <COLON> ConditionalExpression [LogicalOrExpressionPrim])
 ;
 
 AssigmentExpression :
@@ -236,7 +236,7 @@ AssigmentExpression :
     | ConditionalExpression
 ;
 
-AssigmentOperator : <ASSIGN> | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" ;
+AssigmentOperator : <ASSIGN> | <STARASSIGN> | <SLASHASSIGN> | <REMASSIGN> | <PLUSASSIGN> | <MINUSASSIGN> | <LEFT_SHIFT_ASSIGN> | <RIGHT_SHIFT_ASSIGN> | <ANDASSIGN> | <XORASSIGN> | <ORASSIGN> ;
 
 //Expression :
 //    AssigmentExpression

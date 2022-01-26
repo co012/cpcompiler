@@ -69,7 +69,7 @@ StructDeclaratorListPrim :
 
 StructDeclarator :
     Declarator
-    | ([Declarator] ":" ConstantExpression)
+    | ([Declarator] <COLON> ConstantExpression)
 ;
 
 EnumSpecifier :
@@ -112,7 +112,7 @@ Declarator : [Pointer] DirectDeclarator;
 //    | (DirectDeclarator <LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
 //    | (DirectDeclarator <LBRACKET> <STATIC> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
 //    | (DirectDeclarator <LBRACKET> [TypeQualifierList] <STATIC> [AssigmentExpression] <RBRACKET>)
-//    | (DirectDeclarator <LBRACKET> [TypeQualifierList] "*" <RBRACKET>)
+//    | (DirectDeclarator <LBRACKET> [TypeQualifierList] <STAR> <RBRACKET>)
 //    | (DirectDeclarator <LPAREN> ParameterTypeList <RPAREN>)
 //    | (DirectDeclarator <LPAREN> [IdentifierList] <RPAREN>)
 //;
@@ -126,13 +126,13 @@ DirectDeclaratorPrim :
     (<LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
     | (<LBRACKET> <STATIC> [TypeQualifierList] [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
     | (<LBRACKET> [TypeQualifierList] <STATIC> [AssigmentExpression] <RBRACKET> [DirectDeclaratorPrim])
-    | (<LBRACKET> [TypeQualifierList] "*" <RBRACKET> [DirectDeclaratorPrim])
+    | (<LBRACKET> [TypeQualifierList] <STAR> <RBRACKET> [DirectDeclaratorPrim])
     | (<LPAREN> ParameterTypeList <RPAREN> [DirectDeclaratorPrim])
     | (<LPAREN> [IdentifierList] <RPAREN> [DirectDeclaratorPrim])
 ;
 
 Pointer :
-    ("*" [TypeQualifierList] [Pointer])
+    (<STAR> [TypeQualifierList] [Pointer])
 ;
 
 //TypeQualifierList :
@@ -195,7 +195,7 @@ DirectAbstractDeclaratorPrim :
     (SCAN <LBRACKET> TypeQualifierList <STATIC> =>|| AssigmentExpression <RBRACKET>)
     | (SCAN 2 <LBRACKET> <STATIC> [TypeQualifierList] AssigmentExpression <RBRACKET>)
     | (SCAN <LBRACKET> [TypeQualifierList] [AssigmentExpression] <RBRACKET>)
-    | (SCAN 2 <LBRACKET> "*" <RBRACKET>)
+    | (SCAN 2 <LBRACKET> <STAR> <RBRACKET>)
     | (<LPAREN> [ParameterTypeList] <RPAREN>)
 ;
 

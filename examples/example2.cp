@@ -18,8 +18,6 @@ class Rectangle {
         int area = this.width * this.height;
         return area;
     }
-
-
 }
 
 class Circle {

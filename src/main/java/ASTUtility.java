@@ -118,13 +118,11 @@ public class ASTUtility {
             if(postfixExpressionPrim != null && isAnFunctionCall(postfixExpressionPrim)){
 
                 Token thisToken = thisExpression.firstChildOfType(THIS);
-                List<Token> unparsed=thisToken.precedingUnparsedTokens();
                 thisExpression.removeChild(thisToken);
                 Token pointToken = thisExpression.firstChildOfType(POINT);
                 thisExpression.removeChild(pointToken);
                 Token identifier = thisExpression.firstChildOfType(IDENTIFIER);
                 identifier.setImage(className + "_" + identifier.getImage());
-                identifier.preInsert(unparsed.get(0));
 
 
                 postfixExpressionPrim.addChild(1,Token.newToken(IDENTIFIER, "this",null));
@@ -220,7 +218,7 @@ public class ASTUtility {
         argumentExpressionListNew.addChild(Token.newToken(IDENTIFIER, "&" + identifier, null));
         if(argumentExpressionList != null){
             argumentExpressionListNew.addChild(Token.newToken(COMMA, ", ",null));
-            argumentExpressionList.children(true).forEach(argumentExpressionListNew::addChild);
+            argumentExpressionList.children( ).forEach(argumentExpressionListNew::addChild);
         }
         Token rParen = Token.newToken(RPAREN, ")", null);
         argumentExpressionListNew.addChild(rParen);
